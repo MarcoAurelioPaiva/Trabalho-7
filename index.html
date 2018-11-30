@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>
+        Worker
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div>
+        <div>
+        	<h1>Worker Bubble</h1>
+        	<br>
+            Tamanho do array:<br>
+        	<input type="text" id="tamanhoArrayB">
+        	<p><p>
+        	<button onclick="calcularBolha()">Calcular</button>
+        	<i class="fa fa-spinner fa-spin" id="spinB" style="display: none;"></i>
+        	<br>
+        	Tempo: <span id="tempoB"></span>
+        	<br>
+        	Array no console.
+        </div>
+    </div>
+    <div style="padding-top: 35px;">
+        	<h1>Worker Nativo</h1>
+        	<br>
+            Tamanho do array:<br>
+        	<input type="text" id="tamanhoArrayN">
+        	<p><p>
+        	<button onclick="calcularNativo()">Calcular</button>
+        	<i class="fa fa-spinner fa-spin" id="spinN" style="display: none;"></i>
+        	<br>
+        	Tempo: <span id="tempoN"></span>
+        	<br>
+        	Array no console.
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+	var workerBolha = new Worker('bubble.js');
+	var workerNativo = new Worker('nativo.js');
+
+	function calcularBolha(){
+		var tamanhoArray = document.getElementById('tamanhoArrayB');
+		$("#spinB").show();
+		workerBolha.postMessage(tamanhoArray.value);
+	};
+
+	function calcularNativo(){
+		var tamanhoArray = document.getElementById('tamanhoArrayN');
+		$("#spinN").show();
+		workerNativo.postMessage(tamanhoArray.value);
+	};
+
+	workerBolha.addEventListener('message',function(e) {
+		$("#spinB").hide();
+		var span = document.getElementById('tempoB');
+		span.innerHTML = e.data.tempoDecorrido;
+		console.log("Bubble");
+		console.log(e.data.array);
+	});
+
+	workerNativo.addEventListener('message',function(e) {
+		$("#spinN").hide();
+		var span = document.getElementById('tempoN');
+		span.innerHTML = e.data.tempoDecorrido;
+		console.log("Nativo");
+		console.log(e.data.array);
+	});
+</script>
+</html>
